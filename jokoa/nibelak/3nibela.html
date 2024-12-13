@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Golf Jokoa</title>
+    <style>
+        canvas {
+            border: 2px solid black;
+            background-color: skyblue;
+        }
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #87CEEB;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas"></canvas>
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const fondo = new Image();
+        fondo.src = 'errekurtsoak/Minigolf luna.jpg';
+
+        let mouseX = 0;
+        let mouseY = 0;
+        let isPressing = false;
+        let pressTime = 0;
+
+        let kolpeak = 0;
+        let denboraErresten = 60;
+        let jokoan = true;
+
+        const ball = {
+            x: 120,
+            y: canvas.height - 500,
+            radius: 10,
+            dx: 0,
+            dy: 0,
+            gravity: 0.1,
+            friction: 0.99,
+            bounce: 0.3,
+            color: 'grey',
+        };
+
+        const platforms = [
+            { x: 77, y: 140, width: 150, height: 55, type: 'object' },
+            { x: 296, y: 255, width: 180, height: 45, type: 'object' },
+            { x: 765, y: 287, width: 199, height: 50, type: 'object' },
+            { x: 1210, y: 245, width: 55, height: 40, type: 'object' },
+            { x: 1220, y: 240, width: 30, height: 10, type: 'hole' },
+        ];
+
+        function drawPlatforms() {
+            platforms.forEach(platform => {
+                switch (platform.type) {
+                    case 'object': ctx.fillStyle = 'beige'; break;
+                    case 'hole': ctx.fillStyle = 'black'; break;
+                }
+                ctx.fillRect(platform.x, platform.y, platform.width, platform.height);
+            });
+        }
+
+        function drawBall() {
+            ctx.beginPath();
+            ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+            ctx.fillStyle = ball.color;
+            ctx.fill();
+            ctx.closePath();
+        }
+
+        canvas.addEventListener('mousedown', (event) => {
+            mouseX = event.clientX;
+            mouseY = event.clientY;
+            isPressing = true;
+            pressTime = Date.now();
+        });
+
+        canvas.addEventListener('mouseup', (event) => {
+            isPressing = false;
+            const releaseTime = Date.now();
+            const deltaTime = (releaseTime - pressTime) / 100;
+            const angle = Math.atan2(mouseY - ball.y, mouseX - ball.x);
+            ball.dx = deltaTime * Math.cos(angle) * 2;
+            ball.dy = deltaTime * Math.sin(angle) * 2;
+            kolpeak++;
+        });
+
+        function drawArrow() {
+            if (isPressing) {
+                const deltaTime = (Date.now() - pressTime) / 100;
+                const angle = Math.atan2(mouseY - ball.y, mouseX - ball.x);
+                const arrowLength = deltaTime * 15;
+
+                const arrowX = ball.x + arrowLength * Math.cos(angle);
+                const arrowY = ball.y + arrowLength * Math.sin(angle);
+
+                ctx.beginPath();
+                ctx.moveTo(ball.x, ball.y);
+                ctx.lineTo(arrowX, arrowY);
+                ctx.strokeStyle = 'grey';
+                ctx.lineWidth = 3;
+                ctx.stroke();
+                ctx.closePath();
+            }
+        }
+
+        function updateBall() {
+            ball.dx *= ball.friction;
+            ball.dy += ball.gravity;
+
+            ball.x += ball.dx;
+            ball.y += ball.dy;
+
+            // Evitar que la pelota salga de los límites de la pantalla
+            if (ball.x - ball.radius < 0) {
+                ball.x = ball.radius;
+                ball.dx = -ball.dx * ball.bounce;
+            }
+            if (ball.x + ball.radius > canvas.width) {
+                ball.x = canvas.width - ball.radius;
+                ball.dx = -ball.dx * ball.bounce;
+            }
+            if (ball.y - ball.radius < 0) {
+                ball.y = ball.radius;
+                ball.dy = -ball.dy * ball.bounce;
+            }
+            if (ball.y + ball.radius > canvas.height) {
+                ball.y = canvas.height - ball.radius;
+                ball.dy = -ball.dy * ball.bounce;
+            }
+
+            // Detectar colisiones con plataformas
+            platforms.forEach(platform => {
+                if (
+                    ball.x + ball.radius > platform.x &&
+                    ball.x - ball.radius < platform.x + platform.width &&
+                    ball.y + ball.radius > platform.y &&
+                    ball.y - ball.radius < platform.y + platform.height
+                ) {
+                    if (platform.type === 'hole') {
+                        endGame();
+                    } else {
+                        const ballBottom = ball.y + ball.radius;
+                        const ballTop = ball.y - ball.radius;
+                        const ballRight = ball.x + ball.radius;
+                        const ballLeft = ball.x - ball.radius;
+
+                        const platformBottom = platform.y + platform.height;
+                        const platformTop = platform.y;
+                        const platformRight = platform.x + platform.width;
+                        const platformLeft = platform.x;
+
+                        if (ballBottom > platformTop && ballTop < platformTop && ball.dy > 0) {
+                            ball.y = platformTop - ball.radius;
+                            ball.dy = -ball.dy * ball.bounce;
+                        } else if (ballTop < platformBottom && ballBottom > platformBottom && ball.dy < 0) {
+                            ball.y = platformBottom + ball.radius;
+                            ball.dy = -ball.dy * ball.bounce;
+                        } else if (ballRight > platformLeft && ballLeft < platformLeft && ball.dx > 0) {
+                            ball.x = platformLeft - ball.radius;
+                            ball.dx = -ball.dx * ball.bounce;
+                        } else if (ballLeft < platformRight && ballRight > platformRight && ball.dx < 0) {
+                            ball.x = platformRight + ball.radius;
+                            ball.dx = -ball.dx * ball.bounce;
+                        }
+                    }
+                }
+            });
+        }
+
+        function endGame() {
+            ctx.font = "30px Arial";
+            ctx.fillStyle = "grey";
+            ctx.fillText("IRABAZI EGIN DUZU!", canvas.width / 2, canvas.height / 2);
+            cancelAnimationFrame(animationFrame);
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(fondo, 0, 0, canvas.width, canvas.height);
+            drawPlatforms();
+            drawBall();
+            updateBall();
+            drawArrow();
+            updateHUD();
+            requestAnimationFrame(draw);
+        }
+
+        function configureHUDStyle() {
+            ctx.font = "25px Calibri";
+            ctx.fillStyle = "white";
+            ctx.textAlign = "center";
+        }
+
+        function updateHUD() {
+            ctx.fillText("KOLPEAK: " + kolpeak, 100, 30);
+            ctx.fillText("DENBORA: " + denboraErresten, 700, 30);
+        }
+
+        function initializeTimer() {
+            const interval = setInterval(() => {
+                if (denboraErresten > 0) {
+                    denboraErresten--;
+                } else {
+                    clearInterval(interval);
+                    alert("¡DENBORA AMAITU DA!");
+                }
+            }, 1000);
+        }
+
+        fondo.onload = () => {
+            configureHUDStyle();
+            initializeTimer();
+            draw();
+        };
+    </script>
+</body>
+</html>
+

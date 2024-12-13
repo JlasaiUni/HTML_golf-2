@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Golf Jokoa</title>
+    <style>
+        canvas {
+            border: 2px solid black;
+            background-color: skyblue;
+        }
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #87CEEB;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas"></canvas>
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const fondo = new Image();
+        fondo.src = 'errekurtsoak/Minigolf campo.jpg';
+
+        let mouseX = 0;
+        let mouseY = 0;
+        let isPressing = false;
+        let pressTime = 0;
+
+        let kolpeak = 0;
+        let denboraErresten = 60;
+        let jokoan = true;
+
+        const ball = {
+            x: 100,
+            y: 1000,
+            radius: 10,
+            dx: 0,
+            dy: 0,
+            gravity: 0.5,
+            friction: 0.97,
+            bounce: 0.3,
+            color: 'black',
+            power: 0,
+        };
+
+        const platforms = [
+            { x: 75, y: 155, width: 398, height: 59, type: 'grass' },
+            { x: 583, y: 360, width: 361, height: 49, type: 'grass' },
+            { x: 1205, y: 158, width: 281, height: 48, type: 'grass' },
+            { x: 1260, y: 157, width: 120, height: 10, type: 'hole' },
+            { x: -2000, y: 520, width: 20000, height: 200, type: 'water' }
+        ];
+
+        function drawPlatforms() {
+            platforms.forEach(platform => {
+                switch (platform.type) {
+                    case 'grass': ctx.fillStyle = 'green'; break;
+                    case 'sand': ctx.fillStyle = 'yellow'; break;
+                    case 'water': ctx.fillStyle = 'blue'; break;
+                    case 'hole': ctx.fillStyle = 'black'; break;
+                }
+                ctx.fillRect(platform.x, platform.y, platform.width, platform.height);
+            });
+        }
+
+        function drawBall() {
+            ctx.beginPath();
+            ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+            ctx.fillStyle = ball.color;
+            ctx.fill();
+            ctx.closePath();
+        }
+
+        canvas.addEventListener('mousedown', (event) => {
+            mouseX = event.clientX;
+            mouseY = event.clientY;
+            isPressing = true;
+            pressTime = Date.now();
+        });
+
+        canvas.addEventListener('mouseup', (event) => {
+            isPressing = false;
+            const releaseTime = Date.now();
+            const deltaTime = (releaseTime - pressTime) / 100; 
+            const angle = Math.atan2(mouseY - ball.y, mouseX - ball.x);
+            ball.dx = deltaTime * Math.cos(angle) * 2;
+            ball.dy = deltaTime * Math.sin(angle) * 2;
+            kolpeak++;
+        });
+
+        function drawArrow() {
+            if (isPressing) {
+                const deltaTime = (Date.now() - pressTime) / 100; 
+                const angle = Math.atan2(mouseY - ball.y, mouseX - ball.x);
+                const arrowLength = deltaTime * 15;  
+
+                const arrowX = ball.x + arrowLength * Math.cos(angle);
+                const arrowY = ball.y + arrowLength * Math.sin(angle);
+
+                ctx.beginPath();
+                ctx.moveTo(ball.x, ball.y);
+                ctx.lineTo(arrowX, arrowY);
+                ctx.strokeStyle = 'red';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                ctx.closePath();
+            }
+        }
+
+        function updateBall() {
+            ball.dx *= ball.friction;
+            ball.dy += ball.gravity;
+            ball.x += ball.dx;
+            ball.y += ball.dy;
+
+            if (ball.y + ball.radius > canvas.height) {
+                ball.y = canvas.height - ball.radius;
+                ball.dy = -ball.dy * ball.bounce;
+            }
+
+            platforms.forEach(platform => {
+                if (ball.x + ball.radius > platform.x && ball.x - ball.radius < platform.x + platform.width &&
+                    ball.y + ball.radius > platform.y && ball.y - ball.radius < platform.y + platform.height) {
+                    if (platform.type === 'grass') {
+                        ball.dy = -ball.dy * ball.bounce;
+                        ball.y = platform.y - ball.radius;
+                    } else if (platform.type === 'water') {
+                        ball.x = 100; ball.y = 100;
+                    } else if (platform.type === 'hole') {
+                        endGame();
+                    }
+                }
+            });
+        }
+
+        function endGame() {
+            ctx.font = "30px Arial";
+            ctx.fillText("KABUE BOT!", canvas.width / 2, canvas.height / 2);
+            cancelAnimationFrame(animationFrame);
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(fondo, 0, 0, canvas.width, canvas.height);
+            drawPlatforms();
+            drawBall();
+            updateBall();
+            drawArrow();
+            eguneratuHUD();
+            requestAnimationFrame(draw);
+        }
+
+        function konfiguratuHUDestiloa() {
+            ctx.font = "25px Calibri";
+            ctx.fillStyle = "black";
+            ctx.textAlign = "center";
+            ctx.lineWidth = 1.5;
+        }
+
+        function eguneratuHUD() {
+            ctx.fillText("KOLPEAK: " + kolpeak, 100, 30);
+            ctx.fillText("DENBORA: " + denboraErresten, 700, 30);
+        }
+
+        function hasieratuDenboraKontua() {
+            const tartea = setInterval(() => {
+                if (denboraErresten > 0) {
+                    denboraErresten--;
+                } else {
+                    clearInterval(tartea);
+                    jokoan = false;
+                    alert("Denbora amaitu da!");
+                    endGame();
+                }
+            }, 1000);
+        }
+
+        fondo.onload = () => {
+            konfiguratuHUDestiloa();
+            hasieratuDenboraKontua();
+            draw();
+        };
+    </script>
+</body>
+</html>

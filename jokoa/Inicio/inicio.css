@@ -1,0 +1,50 @@
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    justify-content: flex-end;
+    background: url('INICIO9.3.JPG') no-repeat center center fixed;
+    background-size: cover;
+}
+
+.button {
+    display: inline-block;
+    border-radius: 4px;
+    background-color: #15a357;
+    border: none;
+    color: #000000;
+    text-align: center;
+    font-size: 3vw;
+    padding: 3vw;
+    width: 95%;
+    transition: all 0.5s; 
+    cursor: pointer;
+    margin: 10px;
+}
+
+.button span {
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    transition: 0.5s;
+}
+
+.button span:after {
+    content: '\00bb';
+    position: absolute;
+    opacity: 0;
+    top: 0;
+    right: -1vw;
+    transition: 0.5s;
+}
+
+.button:hover span {
+    padding-right: 2vw;
+}
+
+.button:hover span:after {
+    opacity: 1;
+    right: 0;
+}
