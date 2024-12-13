@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Golf Jokoa</title>
+    <title>1.nibela</title>
     <style>
         canvas {
             border: 2px solid black;
@@ -29,7 +29,7 @@
         canvas.height = window.innerHeight;
 
         const fondo = new Image();
-        fondo.src = 'errekurtsoak/Minigolf campo.jpg';
+        fondo.src = 'errekurtsoak/Main level.jpg';
 
         let mouseX = 0;
         let mouseY = 0;
@@ -54,9 +54,9 @@
         };
 
         const platforms = [
-            { x: 75, y: 155, width: 398, height: 59, type: 'grass' },
-            { x: 583, y: 360, width: 361, height: 49, type: 'grass' },
-            { x: 1205, y: 158, width: 281, height: 48, type: 'grass' },
+            { x: 75, y: 155, width: 300, height: 20, type: 'grass' },
+            { x: 583, y: 360, width: 320, height: 20, type: 'grass' },
+            { x: 1205, y: 158, width: 260, height: 20, type: 'grass' },
             { x: 1260, y: 157, width: 120, height: 10, type: 'hole' },
             { x: -2000, y: 520, width: 20000, height: 200, type: 'water' }
         ];
@@ -119,6 +119,7 @@
 
         function updateBall() {
             ball.dx *= ball.friction;
+            ball.dy *= ball.friction;
             ball.dy += ball.gravity;
             ball.x += ball.dx;
             ball.y += ball.dy;
@@ -127,17 +128,42 @@
                 ball.y = canvas.height - ball.radius;
                 ball.dy = -ball.dy * ball.bounce;
             }
-
             platforms.forEach(platform => {
-                if (ball.x + ball.radius > platform.x && ball.x - ball.radius < platform.x + platform.width &&
-                    ball.y + ball.radius > platform.y && ball.y - ball.radius < platform.y + platform.height) {
-                    if (platform.type === 'grass') {
-                        ball.dy = -ball.dy * ball.bounce;
-                        ball.y = platform.y - ball.radius;
-                    } else if (platform.type === 'water') {
-                        ball.x = 100; ball.y = 100;
-                    } else if (platform.type === 'hole') {
+                if (
+                    ball.x + ball.radius > platform.x &&
+                    ball.x - ball.radius < platform.x + platform.width &&
+                    ball.y + ball.radius > platform.y &&
+                    ball.y - ball.radius < platform.y + platform.height
+                ) {
+                    if (platform.type === 'hole') {
                         endGame();
+                    } 
+                    else if (platform.type === 'water') {
+                        ball.x = 100; ball.y = 100;
+                    }else {
+                        const ballBottom = ball.y + ball.radius;
+                        const ballTop = ball.y - ball.radius;
+                        const ballRight = ball.x + ball.radius;
+                        const ballLeft = ball.x - ball.radius;
+
+                        const platformBottom = platform.y + platform.height;
+                        const platformTop = platform.y;
+                        const platformRight = platform.x + platform.width;
+                        const platformLeft = platform.x;
+
+                        if (ballBottom > platformTop && ballTop < platformTop && ball.dy > 0) {
+                            ball.y = platformTop - ball.radius;
+                            ball.dy = -ball.dy * ball.bounce;
+                        } else if (ballTop < platformBottom && ballBottom > platformBottom && ball.dy < 0) {
+                            ball.y = platformBottom + ball.radius;
+                            ball.dy = -ball.dy * ball.bounce;
+                        } else if (ballRight > platformLeft && ballLeft < platformLeft && ball.dx > 0) {
+                            ball.x = platformLeft - ball.radius;
+                            ball.dx = -ball.dx * ball.bounce;
+                        } else if (ballLeft < platformRight && ballRight > platformRight && ball.dx < 0) {
+                            ball.x = platformRight + ball.radius;
+                            ball.dx = -ball.dx * ball.bounce;
+                        }
                     }
                 }
             });
@@ -180,7 +206,6 @@
                     clearInterval(tartea);
                     jokoan = false;
                     alert("Denbora amaitu da!");
-                    endGame();
                 }
             }, 1000);
         }

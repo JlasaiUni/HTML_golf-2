@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3.nibela</title>
+    <title>4.nibela</title>
     <style>
         canvas {
             border: 2px solid black;
@@ -29,7 +29,7 @@
         canvas.height = window.innerHeight;
 
         const fondo = new Image();
-        fondo.src = 'errekurtsoak/Luna.jpg';
+        fondo.src = 'errekurtsoak/Oeste.jpg';
 
         let mouseX = 0;
         let mouseY = 0;
@@ -42,22 +42,23 @@
 
         const ball = {
             x: 120,
-            y: canvas.height - 500,
+            y: canvas.height - 173,
             radius: 10,
             dx: 0,
             dy: 0,
-            gravity: 0.1,
+            gravity: 0.5,
             friction: 0.99,
             bounce: 0.3,
-            color: 'grey',
+            color: 'black',
         };
 
         const platforms = [
-            { x: 77, y: 140, width: 150, height: 55, type: 'object' },
-            { x: 296, y: 255, width: 180, height: 45, type: 'object' },
-            { x: 765, y: 287, width: 199, height: 50, type: 'object' },
-            { x: 1210, y: 245, width: 55, height: 40, type: 'object' },
-            { x: 1220, y: 240, width: 30, height: 10, type: 'hole' },
+            { x: 100, y: 470, width: 227, height: 55, type: 'object' },
+            { x: 520, y: 345, width: 261, height: 45, type: 'object' },
+            { x: 1087, y: 140, width: 185, height: 50, type: 'object' },
+            { x: 380, y: 110, width: 55, height: 60, type: 'object' },
+            { x: 988, y: 415, width: 55, height: 60, type: 'object' },
+            { x: 1148, y: 130, width: 60, height: 10, type: 'hole' },
         ];
 
         function drawPlatforms() {
@@ -107,7 +108,7 @@
                 ctx.beginPath();
                 ctx.moveTo(ball.x, ball.y);
                 ctx.lineTo(arrowX, arrowY);
-                ctx.strokeStyle = 'grey';
+                ctx.strokeStyle = 'white';
                 ctx.lineWidth = 3;
                 ctx.stroke();
                 ctx.closePath();
@@ -180,8 +181,8 @@
 
         function endGame() {
             ctx.font = "30px Arial";
-            ctx.fillStyle = "grey";
-            ctx.fillText("IRABAZI EGIN DUZU!", canvas.width / 2, canvas.height / 2);
+            ctx.fillStyle = "white";
+            ctx.fillText("¡Ganaste!", canvas.width / 2, canvas.height / 2);
             cancelAnimationFrame(animationFrame);
         }
 
@@ -198,7 +199,7 @@
 
         function configureHUDStyle() {
             ctx.font = "25px Calibri";
-            ctx.fillStyle = "white";
+            ctx.fillStyle = "black";
             ctx.textAlign = "center";
         }
 
@@ -213,7 +214,7 @@
                     denboraErresten--;
                 } else {
                     clearInterval(interval);
-                    alert("¡DENBORA AMAITU DA!");
+                    alert("¡Se acabó el tiempo!");
                 }
             }, 1000);
         }
@@ -226,4 +227,3 @@
     </script>
 </body>
 </html>
-
