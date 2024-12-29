@@ -125,9 +125,8 @@ function drawTutorial() {
     ctx.fillText("Kolpeen kontadore bat edukiko duzu beti pantailan", canvas.width / 70, 50);
     ctx.fillText("zure maila ikusteko.", canvas.width / 70, 70);
     ctx.fillText("Helburua: Sartu pilota zuloan", canvas.width / 3, 70);
-    ctx.fillText("Egin klik eta mantendu presioa potentzia kargatzeko", canvas.width / 12, 720);
-    ctx.fillText("Askatu klik pilota zulorantz jaurtitzeko", canvas.width / 12, 740);
-    ctx.fillText("Pilotak hormetan errebotatuko du eta grabitateak eragina izango du", canvas.width - 3, 170);
+    ctx.fillText("Egin klik eta mantendu presioa potentzia kargatzeko", canvas.width / 12, 520);
+    ctx.fillText("Askatu klik pilota zulorantz jaurtitzeko", canvas.width / 12, 540);
 }
 
 // Función: Actualizar estado del juego
@@ -173,6 +172,7 @@ function startTimer() {
             clearInterval(interval);
             jokoan = false;
             alert("Denbora bukatu zaizu");
+            goToNextPage();
         }
     }, 1000);
 }
