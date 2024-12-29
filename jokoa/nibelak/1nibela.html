@@ -140,6 +140,7 @@
                     } 
                     else if (platform.type === 'water') {
                         ball.x = 100; ball.y = 100;
+                        ball.dx = 0; ball.dy = 0;
                     }else {
                         const ballBottom = ball.y + ball.radius;
                         const ballTop = ball.y - ball.radius;
