@@ -41,8 +41,8 @@
         let jokoan = true;
 
         const ball = {
-            x: 120,
-            y: canvas.height - 173,
+            x: 140,
+            y: canvas.height - 303,
             radius: 10,
             dx: 0,
             dy: 0,
@@ -53,18 +53,19 @@
         };
 
         const platforms = [
-            { x: 100, y: 470, width: 227, height: 55, type: 'object' },
-            { x: 520, y: 345, width: 261, height: 45, type: 'object' },
-            { x: 1087, y: 140, width: 185, height: 50, type: 'object' },
-            { x: 380, y: 110, width: 55, height: 60, type: 'object' },
-            { x: 988, y: 415, width: 55, height: 60, type: 'object' },
-            { x: 1148, y: 130, width: 60, height: 10, type: 'hole' },
+            { x: 100, y: 470, width: 227, height: 55, type: 'sand' },
+            { x: 520, y: 345, width: 261, height: 45, type: 'sand' },
+            { x: 380, y: 110, width: 55, height: 60, type: 'sand' },
+            { x: 988, y: 415, width: 55, height: 60, type: 'sand' },
+            { x: 1237, y: 140, width: 185, height: 50, type: 'sand' },
+            { x: -10, y: canvas.height-20, width: canvas.width+20, height: 50, type: 'sand' },
+            { x: 1290, y: 130, width: 60, height: 10, type: 'hole' },
         ];
 
         function drawPlatforms() {
             platforms.forEach(platform => {
                 switch (platform.type) {
-                    case 'object': ctx.fillStyle = 'beige'; break;
+                    case 'sand': ctx.fillStyle = 'yellow'; break;
                     case 'hole': ctx.fillStyle = 'black'; break;
                 }
                 ctx.fillRect(platform.x, platform.y, platform.width, platform.height);
@@ -150,6 +151,12 @@
                 ) {
                     if (platform.type === 'hole') {
                         endGame();
+                    }
+                    if (platform.type === 'sand') {
+                        ball.dx = 0;
+                        ball.dy = 0;
+                        ball.dy -= ball.gravity;
+                        
                     } else {
                         const ballBottom = ball.y + ball.radius;
                         const ballTop = ball.y - ball.radius;
@@ -184,6 +191,7 @@
             ctx.fillStyle = "white";
             ctx.fillText("¡Ganaste!", canvas.width / 2, canvas.height / 2);
             cancelAnimationFrame(animationFrame);
+            goToNextPage();
         }
 
         function draw() {
@@ -214,9 +222,14 @@
                     denboraErresten--;
                 } else {
                     clearInterval(interval);
-                    alert("¡Se acabó el tiempo!");
+                    alert("Denbora amaitu da!");
+                    goToNextPage();
                 }
             }, 1000);
+        }
+
+        function goToNextPage() {
+             window.location.href = '../Inicio/nibelakaukeratu.html'; 
         }
 
         fondo.onload = () => {

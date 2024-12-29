@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        body {
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Centra el contenido horizontalmente */
+            justify-content: flex-start; /* Alinea el título y la imagen en la parte superior */
+        }
+        h1 {
+            color: rgb(0, 0, 0); /* Color del texto */
+            margin-top: 20px; /* Espaciado superior opcional */
+            margin-bottom: 10px; /* Espaciado entre el título y la imagen */
+            font-size: 2.5rem; /* Ajusta el tamaño del texto */
+            text-align: center; /* Centra el texto */
+        }
+        .center-image {
+            width: 450px; /* Ajusta el tamaño de la imagen */
+            height: auto; /* Mantiene la proporción de la imagen */
+            border: 2px solid #ffffff; /* Borde opcional */
+            margin-bottom: 20px; /* Espaciado entre la imagen y los botones */
+        }
+        .buttons-container {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            display: flex;
+            flex-direction: column; /* Alinea los botones en una columna */
+            align-items: center;
+            gap: 10px; /* Espaciado entre los botones */
+            padding: 10px 0; /* Espaciado superior e inferior opcional */
+        }
+        .button {
+            border-radius: 4px;
+            background-color: #15a357;
+            border: none;
+            color: #ffffff; /* Color del texto */
+            text-align: center;
+            font-size: 2rem; /* Ajusta el tamaño del texto en los botones */
+            padding: 10px 0; /* Espaciado interno */
+            width: 1000px; /* Ocupa el 95% del ancho de la pantalla */
+            transition: all 0.5s;
+            cursor: pointer;
+        }
+        .button span {
+            display: inline-block;
+            position: relative;
+            transition: 0.5s;
+        }
+        .button span:after {
+            content: '\00bb'; /* Flecha hacia la derecha */
+            position: absolute;
+            opacity: 0;
+            top: 0;
+            right: -10px;
+            transition: 0.5s;
+        }
+        .button:hover span {
+            padding-right: 15px;
+        }
+        .button:hover span:after {
+            opacity: 1;
+            right: 0;
+        }
+    </style>
+    <title>Nibelaren Aukeraketa</title>
+    <link rel="icon" href="PELOTA.JPG" type="image/x-icon">
+</head>
+<body>
+    <h1>AUKERATU JOLASTU NAHI DUZUN NIBELA</h1>
+    <img src="INICIO9.JPG" alt="Imagen centrada" class="center-image">
+    <div class="buttons-container">
+        
+        <a href="../nibelak/1nibela.html">
+            <button class="button"><span>1. NIBELA</span></button>
+        </a>
+        <a href="../nibelak/2nibela.html">
+            <button class="button"><span>2. NIBELA</span></button>
+        </a>
+        <a href="../nibelak/3nibela.html">
+            <button class="button"><span>3. NIBELA</span></button>
+        </a>
+        <a href="../nibelak/4nibela.html">
+            <button class="button"><span>4. NIBELA</span></button>
+        </a>
+        <a href="zernahida.html">
+            <button class="button"><span>ATZERA JOAN</span></button>
+        </a>
+    </div>
+</body> 
+</html>
+

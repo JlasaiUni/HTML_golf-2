@@ -175,6 +175,7 @@
             ctx.font = "30px Arial";
             ctx.fillText("KABUE BOT!", canvas.width / 2, canvas.height / 2);
             cancelAnimationFrame(animationFrame);
+            goToNextPage();
         }
 
         function draw() {
@@ -208,8 +209,13 @@
                     clearInterval(tartea);
                     jokoan = false;
                     alert("Denbora amaitu da!");
+                    goToNextPage();
                 }
             }, 1000);
+        }
+
+        function goToNextPage() {
+             window.location.href = '../Inicio/nibelakaukeratu.html'; 
         }
 
         fondo.onload = () => {

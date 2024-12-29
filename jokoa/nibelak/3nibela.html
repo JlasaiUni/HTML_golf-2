@@ -42,7 +42,7 @@
 
         const ball = {
             x: 120,
-            y: canvas.height - 500,
+            y: canvas.height - 700,
             radius: 10,
             dx: 0,
             dy: 0,
@@ -56,8 +56,8 @@
             { x: 77, y: 140, width: 150, height: 55, type: 'object' },
             { x: 296, y: 255, width: 180, height: 45, type: 'object' },
             { x: 765, y: 287, width: 199, height: 50, type: 'object' },
-            { x: 1210, y: 245, width: 55, height: 40, type: 'object' },
-            { x: 1220, y: 240, width: 30, height: 10, type: 'hole' },
+            { x: 1360, y: 245, width: 55, height: 40, type: 'object' },
+            { x: 1370, y: 240, width: 30, height: 10, type: 'hole' },
         ];
 
         function drawPlatforms() {
@@ -183,6 +183,7 @@
             ctx.fillStyle = "grey";
             ctx.fillText("IRABAZI EGIN DUZU!", canvas.width / 2, canvas.height / 2);
             cancelAnimationFrame(animationFrame);
+            goToNextPage();
         }
 
         function draw() {
@@ -214,8 +215,13 @@
                 } else {
                     clearInterval(interval);
                     alert("¡DENBORA AMAITU DA!");
+                    goToNextPage();
                 }
             }, 1000);
+        }
+
+        function goToNextPage() {
+             window.location.href = '../Inicio/nibelakaukeratu.html'; 
         }
 
         fondo.onload = () => {
